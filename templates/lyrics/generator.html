@@ -1,0 +1,418 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lyrics Generator | MelodyVerse AI</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/generator.css' %}">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Sidebar -->
+
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="bi bi-music-note-beamed"></i>
+                </div>
+
+                <span>MelodyVerse<span class="brand-ai"> AI</span></span>
+            </div>
+
+            <div class="sidebar-label">WORKSPACE</div>
+
+            <nav class="sidebar-nav">
+
+                <a href="{% url 'dashboard' %}" class="nav-item">
+                    <i class="bi bi-grid"></i>
+                    Dashboard
+                </a>
+
+                <a href="{% url 'lyrics_generator' %}" class="nav-item active">
+                    <i class="bi bi-magic"></i>
+                    Lyrics Generator
+                </a>
+
+                <a href="#" class="nav-item">
+                    <i class="bi bi-collection"></i>
+                    My Lyrics
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <div class="sidebar-label">PREFERENCES</div>
+
+                <a href="#" class="nav-item">
+                    <i class="bi bi-gear"></i>
+                    Settings
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- Main Content -->
+
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <div>
+                    <span class="breadcrumb-text">
+                        Workspace / Lyrics Generator
+                    </span>
+
+                    <h5>Lyrics Generator</h5>
+                </div>
+
+                <div class="topbar-right">
+
+                    <span class="status-badge">
+                        <span class="status-dot"></span>
+                        AI Studio
+                    </span>
+
+                </div>
+
+            </header>
+
+
+            <section class="generator-content">
+
+                <div class="generator-heading">
+
+                    <span class="welcome-label">
+                        YOUR CREATIVE ASSISTANT
+                    </span>
+
+                    <h1>
+                        Create something
+                        <span class="gradient-text">beautiful.</span>
+                    </h1>
+
+                    <p>
+                        Describe your story, emotion or imagination.
+                        Let AI transform it into meaningful song lyrics.
+                    </p>
+
+                </div>
+
+
+                <form method="POST" id="lyricsForm">
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Please correct the following errors:</strong>
+
+                        {{ form.errors }}
+                    </div>
+                    {% endif %}
+
+                    {% if success %}
+                    <div class="alert alert-success">
+                        Your song configuration has been validated successfully!
+
+                        We're ready for AI generation.
+                    </div>
+                    {% endif %}
+
+                    {% csrf_token %}
+
+                    <!-- Song Idea -->
+
+                    <div class="generator-card">
+
+                        <div class="card-heading">
+
+                            <div class="heading-icon">
+                                <i class="bi bi-lightbulb"></i>
+                            </div>
+
+                            <div>
+                                <h4>Tell us your story</h4>
+                                <p>Start with an idea, memory or emotion.</p>
+                            </div>
+
+                        </div>
+
+
+                        <label for="song_title">Song Title (Optional)</label>
+
+                        <input type="text" id="song_title" name="song_title" class="form-control custom-input"
+                            placeholder="Give your song a name...">
+
+
+                        <label for="creative_prompt">
+                            Describe your song idea
+                            <span class="required">*</span>
+                        </label>
+
+                        <textarea id="creative_prompt" name="creative_prompt" class="form-control custom-textarea"
+                            rows="7" maxlength="3000"
+                            placeholder="Example: A boy meets a girl unexpectedly. They become close, but circumstances separate them. Years later, he still remembers their first meeting and wishes they could meet again..."
+                            required></textarea>
+
+                        <div class="textarea-footer">
+                            <span>Be descriptive. Details create better storytelling.</span>
+                            <span id="charCount">0 / 3000</span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Musical Preferences -->
+
+                    <div class="generator-card">
+
+                        <div class="card-heading">
+
+                            <div class="heading-icon">
+                                <i class="bi bi-sliders"></i>
+                            </div>
+
+                            <div>
+                                <h4>Musical Preferences</h4>
+                                <p>Define the sound and emotional identity.</p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="language">Language</label>
+
+                                <select name="language" id="language" class="form-select custom-input">
+
+                                    <option value="Hindi">Hindi</option>
+                                    <option value="Bengali">Bengali</option>
+                                    <option value="English">English</option>
+                                    <option value="Hinglish">Hinglish</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="genre">Music Genre</label>
+
+                                <select name="genre" id="genre" class="form-select custom-input">
+
+                                    <option value="Romantic">Romantic</option>
+                                    <option value="Heartbreak">Heartbreak</option>
+                                    <option value="Spiritual">Spiritual</option>
+                                    <option value="Devotional">Devotional</option>
+                                    <option value="Cinematic">Cinematic</option>
+                                    <option value="Pop">Pop</option>
+                                    <option value="Rock">Rock</option>
+                                    <option value="Indie">Indie</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="mood">Emotional Mood</label>
+
+                                <select name="mood" id="mood" class="form-select custom-input">
+
+                                    <option value="Emotional">Emotional</option>
+                                    <option value="Nostalgic">Nostalgic</option>
+                                    <option value="Peaceful">Peaceful</option>
+                                    <option value="Energetic">Energetic</option>
+                                    <option value="Heartbreaking">Heartbreaking</option>
+                                    <option value="Hopeful">Hopeful</option>
+                                    <option value="Devotional">Devotional</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="vocal">Vocal Preference</label>
+
+                                <select name="vocal" id="vocal" class="form-select custom-input">
+
+                                    <option value="No preference">No preference</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Duet">Duet</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="duration">Song Duration</label>
+
+                                <select name="duration" id="duration" class="form-select custom-input">
+
+                                    <option value="2 minutes">2 minutes</option>
+                                    <option value="3 minutes" selected>3 minutes</option>
+                                    <option value="4 minutes">4 minutes</option>
+                                    <option value="5 minutes">5 minutes</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="structure">Song Structure</label>
+
+                                <select name="structure" id="structure" class="form-select custom-input">
+
+                                    <option value="Standard">Standard</option>
+                                    <option value="Cinematic">Cinematic</option>
+                                    <option value="Short">Short / Reel</option>
+                                    <option value="Custom">Custom</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Advanced Instructions -->
+
+                    <div class="generator-card">
+
+                        <div class="card-heading">
+
+                            <div class="heading-icon">
+                                <i class="bi bi-stars"></i>
+                            </div>
+
+                            <div>
+                                <h4>Creative Instructions</h4>
+                                <p>Fine-tune the writing style.</p>
+                            </div>
+
+                        </div>
+
+
+                        <label for="instructions">
+                            Additional Instructions (Optional)
+                        </label>
+
+                        <textarea id="instructions" name="instructions" class="form-control custom-textarea" rows="4"
+                            placeholder="Example: Use meaningful rhymes, avoid generic expressions, maintain consistent storytelling, create a memorable chorus, use poetic Hindi..."></textarea>
+
+                    </div>
+
+
+                    <!-- Generate Button -->
+
+                    <div class="generate-footer">
+
+                        <a href="{% url 'dashboard' %}" class="cancel-btn">
+                            Cancel
+                        </a>
+
+                        <button type="submit" class="primary-btn generate-btn" id="generateBtn">
+
+                            <i class="bi bi-magic"></i>
+
+                            <span id="generateText">
+                                Generate Lyrics
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+                {% if generation_error %}
+
+                <div class="generator-card">
+
+                    <div class="alert alert-danger mb-0">
+                        <strong>Generation failed!</strong>
+                        {{ generation_error }}
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+
+                {% if generated_lyrics %}
+
+                <div class="generator-card result-card">
+
+                    <div class="card-heading">
+
+                        <div class="heading-icon">
+                            <i class="bi bi-music-note-list"></i>
+                        </div>
+
+                        <div>
+                            <h4>Your Generated Lyrics</h4>
+                            <p>Created with MelodyVerse AI</p>
+                        </div>
+
+                    </div>
+
+                    <textarea id="generatedLyrics" class="form-control custom-textarea"
+                        rows="25">{{ generated_lyrics }}</textarea>
+
+                    <div class="mt-3 d-flex gap-2">
+
+                        <button type="button" class="btn btn-primary" onclick="copyLyrics()">
+                            <i class="bi bi-clipboard"></i>
+                            Copy Lyrics
+                        </button>
+
+                        <button type="button" class="btn btn-outline-light" onclick="downloadLyrics()">
+                            <i class="bi bi-download"></i>
+                            Download TXT
+                        </button>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="{% static 'js/generator.js' %}"></script>
+
+</body>
+
+</html>
